@@ -80,13 +80,13 @@ jobs:
             ghcr.io/steingabelgaard/oca-ci/${{ matrix.image_name }}:latest
           labels: |
             org.opencontainers.image.source=${{ github.event.repository.html_url }}
-          cache-from: type=registry,ref=ghcr.io/oca/oca-ci/${{ matrix.image_name }}:latest
+          cache-from: type=registry,ref=ghcr.io/steingabelgaard/oca-ci/${{ matrix.image_name }}:latest
           cache-to: type=local,dest=/tmp/.buildx-cache
           load: true
       - name: Checkout
         uses: actions/checkout@v2
       - name: Tests
-        run: docker run -v ${PWD}/tests:/mnt/tests --network=host -e PGHOST=localhost ghcr.io/oca/oca-ci/${{ matrix.image_name }}:latest /mnt/tests/runtests.sh -v
+        run: docker run -v ${PWD}/tests:/mnt/tests --network=host -e PGHOST=localhost ghcr.io/steingabelgaard/oca-ci/${{ matrix.image_name }}:latest /mnt/tests/runtests.sh -v
         # Don't bother with Odoo 8 and 9 for now...
         if: ${{ matrix.odoo_version != '8.0' && matrix.odoo_version != '9.0' }}
       - name: Push image
