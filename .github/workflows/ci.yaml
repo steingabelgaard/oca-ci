@@ -16,25 +16,13 @@ jobs:
       matrix:
         include:
           # odoo/odoo
-          - python_version: "2.7"
-            odoo_version: "8.0"
-            odoo_org_repo: "odoo/odoo"
-            image_name: py2.7-odoo8.0
-          - python_version: "2.7"
-            odoo_version: "9.0"
-            odoo_org_repo: "odoo/odoo"
-            image_name: py2.7-odoo9.0
-          - python_version: "2.7"
-            odoo_version: "10.0"
-            odoo_org_repo: "odoo/odoo"
-            image_name: py2.7-odoo10.0
           - python_version: "3.5"
             odoo_version: "11.0"
-            odoo_org_repo: "odoo/odoo"
+            odoo_org_repo: "steingabelgaard/odoo"
             image_name: py3.5-odoo11.0
-          - python_version: "3.6"
+          - python_version: "3.5"
             odoo_version: "12.0"
-            odoo_org_repo: "odoo/odoo"
+            odoo_org_repo: "steingabelgaard/odoo"
             setuptools_constraint: "<58"  # vatnumber needs setuptools with 2to3 support
             image_name: py3.6-odoo12.0
           - python_version: "3.6"
@@ -62,53 +50,6 @@ jobs:
             odoo_version: "16.0"
             odoo_org_repo: "odoo/odoo"
             image_name: py3.10-odoo16.0
-          # oca/ocb
-          - python_version: "2.7"
-            odoo_version: "8.0"
-            odoo_org_repo: "oca/ocb"
-            image_name: py2.7-ocb8.0
-          - python_version: "2.7"
-            odoo_version: "9.0"
-            odoo_org_repo: "oca/ocb"
-            image_name: py2.7-ocb9.0
-          - python_version: "2.7"
-            odoo_version: "10.0"
-            odoo_org_repo: "oca/ocb"
-            image_name: py2.7-ocb10.0
-          - python_version: "3.5"
-            odoo_version: "11.0"
-            odoo_org_repo: "oca/ocb"
-            image_name: py3.5-ocb11.0
-          - python_version: "3.6"
-            odoo_version: "12.0"
-            odoo_org_repo: "oca/ocb"
-            setuptools_constraint: "<58"  # vatnumber needs setuptools with 2to3 support
-            image_name: py3.6-ocb12.0
-          - python_version: "3.6"
-            odoo_version: "13.0"
-            odoo_org_repo: "oca/ocb"
-            setuptools_constraint: "<58"  # vatnumber needs setuptools with 2to3 support
-            image_name: py3.6-ocb13.0
-          - python_version: "3.6"
-            odoo_version: "14.0"
-            odoo_org_repo: "oca/ocb"
-            image_name: py3.6-ocb14.0
-          - python_version: "3.8"
-            odoo_version: "14.0"
-            odoo_org_repo: "oca/ocb"
-            image_name: py3.8-ocb14.0
-          - python_version: "3.8"
-            odoo_version: "15.0"
-            odoo_org_repo: "oca/ocb"
-            image_name: py3.8-ocb15.0
-          - python_version: "3.9"
-            odoo_version: "15.0"
-            odoo_org_repo: "oca/ocb"
-            image_name: py3.9-ocb15.0
-          - python_version: "3.10"
-            odoo_version: "16.0"
-            odoo_org_repo: "oca/ocb"
-            image_name: py3.10-ocb16.0
     services:
       postgres:
         image: postgres:9.6
@@ -136,7 +77,7 @@ jobs:
             odoo_org_repo=${{ matrix.odoo_org_repo }}
             setuptools_constraint=${{ matrix.setuptools_constraint }}
           tags: |
-            ghcr.io/oca/oca-ci/${{ matrix.image_name }}:latest
+            ghcr.io/steingabelgaard/oca-ci/${{ matrix.image_name }}:latest
           labels: |
             org.opencontainers.image.source=${{ github.event.repository.html_url }}
           cache-from: type=registry,ref=ghcr.io/oca/oca-ci/${{ matrix.image_name }}:latest
@@ -157,10 +98,10 @@ jobs:
             odoo_org_repo=${{ matrix.odoo_org_repo }}
             setuptools_constraint=${{ matrix.setuptools_constraint }}
           tags: |
-            ghcr.io/oca/oca-ci/${{ matrix.image_name }}:latest
+            ghcr.io/steingabelgaard/oca-ci/${{ matrix.image_name }}:latest
           labels: |
             org.opencontainers.image.source=${{ github.event.repository.html_url }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=inline
           push: true
-        if: ${{ github.repository_owner == 'OCA' && github.ref == 'refs/heads/master' }}
+        if: ${{ github.repository_owner == 'steingabelgaard' && github.ref == 'refs/heads/master' }}
