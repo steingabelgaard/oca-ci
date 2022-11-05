@@ -14,6 +14,7 @@ set -ex
 # (this includes addons, python external dependencies and odoo itself)
 mkdir -p  /opt/odoo/dependencies
 clone_sg_dependencies /opt/odoo/dependencies ${ADDONS_DIR}
+ls -l /opt/odoo/dependencies
 setuptools-odoo-get-requirements --include-addons --addons-dir ${ADDONS_DIR} --dependencies-dir /opt/odoo/dependencies >> test-requirements.txt
 
 # Install addons in current repo in editable mode, so coverage will see them.
