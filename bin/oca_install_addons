@@ -12,7 +12,7 @@ set -ex
 
 # Compute and install direct dependencies of installable addons in $ADDONS_DIR
 # (this includes addons, python external dependencies and odoo itself)
-mkdir ${HOME}/dependencies
+mkdir -p  ${HOME}/dependencies
 clone_sg_dependencies ${HOME}/dependencies ${ADDONS_DIR}
 setuptools-odoo-get-requirements --include-addons --addons-dir ${ADDONS_DIR} --dependencies-dir ${HOME}/dependencies >> test-requirements.txt
 
