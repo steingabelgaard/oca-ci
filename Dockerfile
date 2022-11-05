@@ -102,7 +102,7 @@ COPY bin/addons /usr/local/bin
 
 # Install setuptools-odoo-get-requirements and setuptools-odoo-makedefault helper
 # scripts.
-RUN pipx install --pip-args="--no-cache-dir" "setuptools-odoo>=3.0.7"
+RUN pipx install --pip-args="--no-cache-dir" git+https://github.com/steingabelgaard/setuptools-odoo.git
 
 # Make a virtualenv for Odoo so we isolate from system python dependencies and
 # make sure addons we test declare all their python dependencies properly
