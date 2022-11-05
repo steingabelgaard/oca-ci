@@ -12,9 +12,9 @@ set -ex
 
 # Compute and install direct dependencies of installable addons in $ADDONS_DIR
 # (this includes addons, python external dependencies and odoo itself)
-mkdir -p  ${HOME}/dependencies
-clone_sg_dependencies ${HOME}/dependencies ${ADDONS_DIR}
-setuptools-odoo-get-requirements --include-addons --addons-dir ${ADDONS_DIR} --dependencies-dir ${HOME}/dependencies >> test-requirements.txt
+mkdir -p  /opt/odoo/dependencies
+clone_sg_dependencies /opt/odoo/dependencies ${ADDONS_DIR}
+setuptools-odoo-get-requirements --include-addons --addons-dir ${ADDONS_DIR} --dependencies-dir /opt/odoo/dependencies >> test-requirements.txt
 
 # Install addons in current repo in editable mode, so coverage will see them.
 cat test-requirements.txt
@@ -23,7 +23,7 @@ pip config list
 pip list
 
 # Add ADDONS_DIR to addons_path.
-echo "addons_path=${ADDONS_PATH},${ADDONS_DIR}" >> ${ODOO_RC}
+echo "addons_path=${ADDONS_PATH},${ADDONS_DIR},$(getaddons.py /opt/odoo/dependencies)" >> ${ODOO_RC}
 cat ${ODOO_RC}
 
 deps=$(oca_list_external_dependencies deb)
