@@ -13,5 +13,5 @@ def test_addons_path():
     with install_test_addons(["addon_success"]):
         assert (
             Path(os.environ["ODOO_RC"]).read_text()
-            == "[options]\naddons_path=/opt/odoo/addons,.\n"
+            == "[options]\naddons_path=/opt/odoo/addons,.,\n"
         )
