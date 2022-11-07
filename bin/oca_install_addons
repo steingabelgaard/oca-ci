@@ -16,11 +16,26 @@ mkdir -p  /opt/odoo/dependencies
 clone_sg_dependencies /opt/odoo/dependencies ${ADDONS_DIR}
 ls -l /opt/odoo/dependencies
 touch test-requirements.txt
-setuptools-odoo-get-requirements --include-addons --addons-dir ${ADDONS_DIR} --dependencies-dir /opt/odoo/dependencies --output test-requirements.txt
+echo >> "# Primary depends" >> test-requirements.txt
+setuptools-odoo-get-requirements --include-addons --addons-dir ${ADDONS_DIR} >> test-requirements.txt
 
-# Install addons in current repo in editable mode, so coverage will see them.
+for d in $(getaddons.py /opt/odoo/dependencies)
+do
+   echo >> "# ${d} depends" >> test-requirements.txt
+   setuptools-odoo-get-requirements --include-addons --addons-dir ${d} >> test-requirements.txt
+done
+
+# build own addons file:
+for m in $(getaddons.py -m /opt/odoo/dependencies)
+do
+   echo >> "odoo12-addon-${d}" >> own_addons.txt
+done
+cat own_addons.txt
 cat test-requirements.txt
-pip install -r test-requirements.txt
+grep -v -x -F -f own_addons.txt test-requirements.txt > filtered-requirements.txt
+# Install addons in current repo in editable mode, so coverage will see them.
+cat filtered-requirements.txt
+pip install -r filtered-requirements.txt
 pip config list
 pip list
 
