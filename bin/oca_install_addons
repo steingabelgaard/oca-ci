@@ -34,7 +34,7 @@ do
 done
 cat own_addons.txt
 cat addons-requirements.txt
-grep -q -v -x -F -f own_addons.txt addons-requirements.txt > test-requirements.txt
+grep -q -v -x -F -f own_addons.txt addons-requirements.txt >> test-requirements.txt
 # Install addons in current repo in editable mode, so coverage will see them.
 cat test-requirements.txt
 pip install -r test-requirements.txt

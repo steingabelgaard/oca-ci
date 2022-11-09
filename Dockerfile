@@ -14,7 +14,8 @@ RUN apt-get update -qq \
         gnupg \
         lsb-release \
         software-properties-common \
-        expect-dev
+        expect-dev \
+        grep
 
 # Install wkhtml
 RUN curl -sSL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.$(lsb_release -c -s)_amd64.deb -o /tmp/wkhtml.deb \
