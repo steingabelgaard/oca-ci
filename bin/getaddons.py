@@ -179,11 +179,14 @@ def main(argv=None):
     application = None
     localization = None
     exclude_modules = []
+    sepchar = ','
 
     while params and params[0].startswith('-'):
         param = params.pop(0)
         if param == '-m':
             list_modules = True
+        elif param == '-s':
+            sepchar = ' '
         elif param == '-e':
             exclude_modules = [x for x in params.pop(0).split(',')]
         elif param == '--only-applications':
@@ -221,7 +224,7 @@ def main(argv=None):
         res = [x for l in lists for x in l]  # flatten list of lists
     if exclude_modules:
         res = [x for x in res if x not in exclude_modules]
-    print(' '.join(res))
+    print(sepchar.join(res))
     return res
 
 
