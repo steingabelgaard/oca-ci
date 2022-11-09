@@ -18,9 +18,9 @@ ls -l /opt/odoo/dependencies
 touch test-requirements.txt
 touch addons-requirements.txt
 touch own_addons.txt
-echo "# Place sg dependencies her" >> own_addons.txt
+echo "# Own addons file" >> own_addons.txt
 echo "# Primary depends" >> addons-requirements.txt
-echo "# Primary depends" >> test-requirements.txt
+echo "# Primary depends test" >> test-requirements.txt
 setuptools-odoo-get-requirements --include-addons --addons-dir ${ADDONS_DIR} >> addons-requirements.txt
 
 for d in $(getaddons.py -s /opt/odoo/dependencies)
