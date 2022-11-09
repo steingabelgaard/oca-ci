@@ -30,7 +30,7 @@ done
 # build own addons file:
 for m in $(getaddons.py -m /opt/odoo/dependencies)
 do
-   echo >> "odoo12-addon-${d}" >> own_addons.txt
+   echo "odoo12-addon-${d}" >> own_addons.txt
 done
 cat own_addons.txt
 cat addons-requirements.txt

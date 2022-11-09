@@ -221,7 +221,7 @@ def main(argv=None):
         res = [x for l in lists for x in l]  # flatten list of lists
     if exclude_modules:
         res = [x for x in res if x not in exclude_modules]
-    print(','.join(res))
+    print(' '.join(res))
     return res
 
 
