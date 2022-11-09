@@ -17,8 +17,8 @@ clone_sg_dependencies /opt/odoo/dependencies ${ADDONS_DIR}
 ls -l /opt/odoo/dependencies
 touch test-requirements.txt
 touch addons-requirements.txt
-touch own_addons.txt
-echo >> "# Primary depends" >> test-requirements.txt
+echo "# Place sg dependencies her" >> own_addons.txt
+echo "# Primary depends" >> test-requirements.txt
 setuptools-odoo-get-requirements --include-addons --addons-dir ${ADDONS_DIR} >> addons-requirements.txt
 
 for d in $(getaddons.py /opt/odoo/dependencies)
