@@ -23,7 +23,7 @@ setuptools-odoo-get-requirements --include-addons --addons-dir ${ADDONS_DIR} >> 
 
 for d in $(getaddons.py /opt/odoo/dependencies)
 do
-   echo >> "# ${d} depends" >> addons-requirements.txt
+   echo "# ${d} depends" >> addons-requirements.txt
    setuptools-odoo-get-requirements --include-addons --addons-dir ${d} >> addons-requirements.txt
 done
 
