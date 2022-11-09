@@ -23,7 +23,6 @@ jobs:
           - python_version: "3.5"
             odoo_version: "12.0"
             odoo_org_repo: "steingabelgaard/odoo"
-            setuptools_constraint: "<58"  # vatnumber needs setuptools with 2to3 support
             image_name: py3.5-odoo12.0
           - python_version: "3.6"
             odoo_version: "13.0"
