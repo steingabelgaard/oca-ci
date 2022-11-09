@@ -25,13 +25,13 @@ for d in $(getaddons.py -s /opt/odoo/dependencies)
 do
    echo "# ${d} depends" >> addons-requirements.txt
    setuptools-odoo-get-requirements --include-addons --addons-dir ${d} >> addons-requirements.txt
+   # build own addons file:
+   for m in $(getaddons.py -m -s ${d})
+   do
+      echo "odoo12-addon-${m}" >> own_addons.txt
+   done
 done
 
-# build own addons file:
-for m in $(getaddons.py -m -s /opt/odoo/dependencies)
-do
-   echo "odoo12-addon-${d}" >> own_addons.txt
-done
 cat own_addons.txt
 cat addons-requirements.txt
 grep -q -v -x -F -f own_addons.txt addons-requirements.txt >> test-requirements.txt
