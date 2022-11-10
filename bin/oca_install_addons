@@ -39,7 +39,7 @@ echo "OWN ADDONS"
 cat own_addons.txt
 echo "ADDONS REQ"
 cat addons-requirements.txt
-grep -q -v -x -F -f own_addons.txt addons-requirements.txt >> test-requirements.txt
+grep -v -x -F -f own_addons.txt addons-requirements.txt >> test-requirements.txt
 # Install addons in current repo in editable mode, so coverage will see them.
 echo "TEST REQ"
 cat test-requirements.txt
