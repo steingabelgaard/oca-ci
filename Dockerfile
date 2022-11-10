@@ -14,7 +14,12 @@ RUN apt-get update -qq \
         gnupg \
         lsb-release \
         software-properties-common \
-        expect-dev
+        expect-dev \
+        build-essential \
+        libpoppler-cpp-dev \
+        pkg-config \
+        python3-dev \
+        poppler-utils
 
 
 # Install wkhtml
@@ -121,6 +126,11 @@ ARG odoo_version
 # and not very portable.
 ADD https://raw.githubusercontent.com/OCA/OCB/$odoo_version/requirements.txt /tmp/ocb-requirements.txt
 RUN pip install --no-cache-dir --no-binary psycopg2 -r /tmp/ocb-requirements.txt
+
+# Install Open Upgrade req. from our fork. We add often used packages to these
+ADD https://raw.githubusercontent.com/steingabelgaard/OpenUpgrade/$odoo_version/requirements.txt /tmp/sgou-requirements.txt
+RUN pip install --no-cache-dir --no-binary psycopg2 -r /tmp/sgou-requirements.txt
+
 
 # Install other test requirements.
 # - coverage

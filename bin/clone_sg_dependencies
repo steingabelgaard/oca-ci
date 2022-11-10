@@ -21,7 +21,7 @@ The expected format for sg_dependencies.txt:
 * a dependency line contains:
   - the name of the OCA project
   - (optional) the URL to the git repository (defaulting to the OCA repository)
-  - (optional) the name of the branch to use (defaulting to ${VERSION})
+  - (optional) the name of the branch to use (defaulting to ${ODOO_VERSION})
 """
 from __future__ import print_function
 import sys

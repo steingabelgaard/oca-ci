@@ -31,7 +31,7 @@ do
    echo "# ${d} addons" >> own_addons.txt
    for m in $(getaddons.py -m -s ${d})
    do
-      echo "odoo12-addon-${m}" >> own_addons.txt
+      echo "odoo${ODOO_VERSION:0:2}-addon-${m}" >> own_addons.txt
    done
 done
 
