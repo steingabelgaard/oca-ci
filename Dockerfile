@@ -14,12 +14,7 @@ RUN apt-get update -qq \
         gnupg \
         lsb-release \
         software-properties-common \
-        expect-dev \
-        build-essential \
-        libpoppler-cpp-dev \
-        pkg-config \
-        python3-dev \
-        poppler-utils
+        expect-dev
 
 
 # Install wkhtml
@@ -81,6 +76,10 @@ RUN apt-get update -qq \
        swig \
        libffi-dev \
        pkg-config \
+       # S&G
+       libpoppler-cpp-dev \
+       python3-dev \
+       poppler-utils \
        # We should install distutils if and only if it exists
     && apt-cache --generate pkgnames \
        | grep --line-regexp --fixed-strings \
