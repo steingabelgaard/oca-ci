@@ -39,8 +39,7 @@ RUN curl -sSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
     && DEBIAN_FRONTEND=noninteractive apt-get install -qq postgresql-client-12
 
 # Install Google Chrome for browser tests
-ARG chrome_version=90.0.4430.93-1
-RUN curl -sSL https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${chrome_version}_amd64.deb -o /tmp/chrome.deb \
+RUN curl -sSL https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o /tmp/chrome.deb \
     && apt-get -y install --no-install-recommends /tmp/chrome.deb \
     && rm /tmp/chrome.deb
 
@@ -97,13 +96,8 @@ RUN python3 -m venv /opt/pipx-venv \
 # in virtualenvs it create.
 RUN pipx install --pip-args="--no-cache-dir" virtualenv
 
-# We use manifestoo to check licenses, development status
+# We use manifestoo to check licenses, development status and list addons and dependencies
 RUN pipx install --pip-args="--no-cache-dir" "manifestoo>=0.3.1"
-
-# Install the 'addons' helper script
-# TODO: use manifestoo
-RUN pipx install --pip-args="--no-cache-dir" acsoo==3.0.2
-COPY bin/addons /usr/local/bin
 
 # Install setuptools-odoo-get-requirements and setuptools-odoo-makedefault helper
 # scripts.
