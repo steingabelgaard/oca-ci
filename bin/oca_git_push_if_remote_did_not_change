@@ -4,7 +4,10 @@ set -eux
 
 PUSH_REPOSITORY=$1
 
-git remote set-url origin $PUSH_REPOSITORY
+if [ "$PUSH_REPOSITORY" != "origin"
+then
+    git remote set-url origin $PUSH_REPOSITORY
+fi
 git remote -v
 git fetch --unshallow origin
 
