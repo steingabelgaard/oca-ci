@@ -26,7 +26,7 @@ if [[ ! -z "${PR_NUMBER}" ]]; then
 
     git config user.name ${OCA_GIT_USER_NAME}
     git config user.email ${OCA_GIT_USER_EMAIL}
-    if grep -q -wi "WARNING" /tmp/odoo.out; then
+    if grep -q "WARNING" /tmp/odoo.out; then
         gh pr edit ${PR_NUMBER} --add-label "warnings"
     else
         gh pr edit ${PR_NUMBER} --remove-label "warnings"
