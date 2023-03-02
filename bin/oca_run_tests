@@ -21,6 +21,11 @@ unbuffer coverage run --include "${ADDONS_DIR}/*" --branch \
     --stop-after-init 2>&1 | tee /tmp/odoo.out
 
 if [[ ! -z "${PR_NUMBER}" ]]; then
+    # https://github.com/actions/checkout/issues/766
+    git config --global --add safe.directory $PWD
+
+    git config user.name ${OCA_GIT_USER_NAME}
+    git config user.email ${OCA_GIT_USER_EMAIL}
     if grep -q -wi "WARNING" /tmp/odoo.out; then
         gh pr edit ${PR_NUMBER} --add-label "warnings"
     else
