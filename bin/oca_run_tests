@@ -20,10 +20,10 @@ unbuffer coverage run --include "${ADDONS_DIR}/*" --branch \
     --test-enable \
     --stop-after-init 2>&1 | tee /tmp/odoo.out
 
-if [[ ! -z "${{ github.event.pull_request.number }}" ]]; then
+if [[ ! -z "${PR_NUMBER}" ]]; then
     if grep -q -wi "WARNING" /tmp/odoo.out; then
-        gh pr edit ${{ github.event.pull_request.number }} --add-label "warnings"
+        gh pr edit ${PR_NUMBER} --add-label "warnings"
     else
-        gh pr edit ${{ github.event.pull_request.number }} --remove-label "warnings"
+        gh pr edit ${PR_NUMBER} --remove-label "warnings"
     fi
 fi
