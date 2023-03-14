@@ -34,5 +34,7 @@ if [[ ! -z "${PR_NUMBER}" ]]; then
         gh pr edit ${PR_NUMBER} --remove-label "warnings"
     fi
 fi
-
+if grep -q "ERROR" /tmp/odoo.out; then
+    exit 1
+fi
 exit $TEST
