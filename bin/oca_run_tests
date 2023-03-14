@@ -20,6 +20,8 @@ unbuffer coverage run --include "${ADDONS_DIR}/*" --branch \
     --test-enable \
     --stop-after-init 2>&1 | tee /tmp/odoo.out
 
+TEST=$?
+
 if [[ ! -z "${PR_NUMBER}" ]]; then
     # https://github.com/actions/checkout/issues/766
     git config --global --add safe.directory $PWD
@@ -32,3 +34,5 @@ if [[ ! -z "${PR_NUMBER}" ]]; then
         gh pr edit ${PR_NUMBER} --remove-label "warnings"
     fi
 fi
+
+exit $TEST
