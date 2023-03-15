@@ -31,7 +31,11 @@ do
    echo "# ${d} addons" >> own_addons.txt
    for m in $(getaddons.py -m -s ${d})
    do
-      echo "odoo${ODOO_VERSION:0:2}-addon-${m}" >> own_addons.txt
+      if [[ "${ODOO_VERSION}" < "15.0" ]]; then
+         echo "odoo${ODOO_VERSION:0:2}-addon-${m}" >> own_addons.txt
+      else
+         echo "odoo-addon-${m}" >> own_addons.txt
+      fi
    done
 done
 
