@@ -34,7 +34,7 @@ do
       if [[ "${ODOO_VERSION}" < "15.0" ]]; then
          echo "odoo${ODOO_VERSION:0:2}-addon-${m}" >> own_addons.txt
       else
-         echo "odoo-addon-${m}" >> own_addons.txt
+         echo "odoo-addon-${m}>=${ODOO_VERSION:0:2}.0dev,<${ODOO_VERSION:0:2}.1dev" >> own_addons.txt
       fi
    done
 done
