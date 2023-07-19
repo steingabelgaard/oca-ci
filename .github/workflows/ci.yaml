@@ -25,35 +25,43 @@ jobs:
             odoo_version: "11.0"
             odoo_org_repo: "steingabelgaard/odoo"
             image_name: py3.5-odoo11.0
+            codename: bionic
           - python_version: "3.5"
             odoo_version: "12.0"
             odoo_org_repo: "steingabelgaard/odoo"
             image_name: py3.5-odoo12.0
+            codename: bionic
           - python_version: "3.6"
             odoo_version: "13.0"
             odoo_org_repo: "odoo/odoo"
             setuptools_constraint: "<58"  # vatnumber needs setuptools with 2to3 support
             image_name: py3.6-odoo13.0
+            codename: bionic
           - python_version: "3.6"
             odoo_version: "14.0"
             odoo_org_repo: "odoo/odoo"
             image_name: py3.6-odoo14.0
+            codename: bionic
           - python_version: "3.8"
             odoo_version: "14.0"
             odoo_org_repo: "odoo/odoo"
             image_name: py3.8-odoo14.0
+            codename: focal
           - python_version: "3.8"
             odoo_version: "15.0"
             odoo_org_repo: "odoo/odoo"
             image_name: py3.8-odoo15.0
+            codename: focal
           - python_version: "3.9"
             odoo_version: "15.0"
             odoo_org_repo: "odoo/odoo"
             image_name: py3.9-odoo15.0
+            codename: focal
           - python_version: "3.10"
             odoo_version: "16.0"
             odoo_org_repo: "odoo/odoo"
             image_name: py3.10-odoo16.0
+            codename: focal
     services:
       postgres:
         image: postgres:9.6
@@ -80,6 +88,7 @@ jobs:
             odoo_version=${{ matrix.odoo_version }}
             odoo_org_repo=${{ matrix.odoo_org_repo }}
             setuptools_constraint=${{ matrix.setuptools_constraint }}
+            codename=${{ matrix.codename }}
           tags: |
             ghcr.io/steingabelgaard/oca-ci/${{ matrix.image_name }}:latest
           labels: |
