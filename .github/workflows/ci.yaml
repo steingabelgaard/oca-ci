@@ -110,6 +110,7 @@ jobs:
             odoo_version=${{ matrix.odoo_version }}
             odoo_org_repo=${{ matrix.odoo_org_repo }}
             setuptools_constraint=${{ matrix.setuptools_constraint }}
+            codename=${{ matrix.codename }}
           tags: |
             ghcr.io/steingabelgaard/oca-ci/${{ matrix.image_name }}:latest
           labels: |
