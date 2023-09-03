@@ -16,7 +16,6 @@ RUN apt-get update -qq \
         software-properties-common \
         expect-dev
 
-
 # Install wkhtml
 RUN curl -sSL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.$(lsb_release -c -s)_amd64.deb -o /tmp/wkhtml.deb \
     && apt-get update -qq \
@@ -106,7 +105,8 @@ RUN python3 -m venv /opt/pipx-venv \
 
 # We don't use the ubuntu virtualenv package because it unbundles pip dependencies
 # in virtualenvs it create.
-RUN pipx install --pip-args="--no-cache-dir" virtualenv
+ARG virtualenv_constraint
+RUN pipx install --pip-args="--no-cache-dir" "virtualenv$virtualenv_constraint"
 
 # We use manifestoo to check licenses, development status and list addons and dependencies
 RUN pipx install --pip-args="--no-cache-dir" "manifestoo>=0.3.1"
