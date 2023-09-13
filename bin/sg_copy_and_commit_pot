@@ -1,0 +1,15 @@
+#!/bin/bash
+
+#
+# copy .pot/.po from beta branch for installed addons and git push changes.
+#
+
+set -ex
+
+# https://github.com/actions/checkout/issues/766
+git config --global --add safe.directory $PWD
+
+git config user.name ${OCA_GIT_USER_NAME}
+git config user.email ${OCA_GIT_USER_EMAIL}
+pip install git+https://github.com/steingabelgaard/click-odoo-sg.git:master
+click-odoo-copypot --addons-dir ${ADDONS_DIR} -d ${PGDATABASE} --msgmerge-if-new-pot --commit --log-level=debug --commit-message="[UPD] Copy {addon_name}.pot/da.po[ci skip]" --pot-branch ${POT_BRANCH}
