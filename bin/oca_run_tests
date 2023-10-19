@@ -40,8 +40,8 @@ for rule in env['ir.rule'].search([]):
         raise
 EOF
  } | tee >> /tmp/odoo.out
-TEST2= $?
-if (( $TEST == 0)); then
+TEST2=$?
+if [ -z "$TEST2" ] && (( $TEST == 0)); then
      TEST = $TEST2
 fi
 
