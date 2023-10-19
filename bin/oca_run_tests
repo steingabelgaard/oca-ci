@@ -23,8 +23,8 @@ unbuffer coverage run --include "${ADDONS_DIR}/*" --branch \
 TEST=$?
 
 {
-$(which odoo || which openerp-server) \
-    -d ${PGDATABASE} shell << EOF
+$(which odoo || which openerp-server) shell \
+    -d ${PGDATABASE} << EOF
 from odoo.tools.safe_eval import safe_eval
 from odoo.osv import expression
 import logging
