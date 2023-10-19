@@ -40,6 +40,10 @@ for rule in env['ir.rule'].search([]):
         raise
 EOF
  } | tee >> /tmp/odoo.out
+TEST2= $?
+if (( $TEST == 0)); then
+     TEST = $TEST2
+fi
 
 if [[ ! -z "${PR_NUMBER}" ]]; then
     # https://github.com/actions/checkout/issues/766
