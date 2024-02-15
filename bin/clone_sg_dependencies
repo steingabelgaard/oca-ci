@@ -125,5 +125,8 @@ if __name__ == '__main__':
     else:
         deps_checkout_dir = sys.argv[1]
         build_dir = sys.argv[2]
-        branch = sys.argv[3]
+        if len(sys.argv) == 4:
+            branch = sys.argv[3]
+        else:
+            branch = False
     run(deps_checkout_dir, build_dir, branch)
