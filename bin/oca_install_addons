@@ -13,7 +13,7 @@ set -ex
 # Compute and install direct dependencies of installable addons in $ADDONS_DIR
 # (this includes addons, python external dependencies and odoo itself)
 mkdir -p  /opt/odoo/dependencies
-clone_sg_dependencies /opt/odoo/dependencies ${ADDONS_DIR}
+clone_sg_dependencies /opt/odoo/dependencies ${ADDONS_DIR} $1
 ls -l /opt/odoo/dependencies
 touch test-requirements.txt
 touch addons-requirements.txt
