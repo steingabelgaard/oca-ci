@@ -39,13 +39,13 @@ jobs:
             setuptools_constraint: "<58"  # vatnumber needs setuptools with 2to3 support
             virtualenv_constraint: "<20.22"
             image_name: py3.6-odoo13.0
-            codename: bionic
+            codename: focal
           - python_version: "3.6"
             odoo_version: "14.0"
             odoo_org_repo: "odoo/odoo"
             virtualenv_constraint: "<20.22"
             image_name: py3.6-odoo14.0
-            codename: bionic
+            codename: focal
           - python_version: "3.8"
             odoo_version: "14.0"
             odoo_org_repo: "odoo/odoo"
