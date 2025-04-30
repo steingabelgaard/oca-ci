@@ -1,5 +1,6 @@
-from pathlib import Path
 import os
+import subprocess
+from pathlib import Path
 
 from .common import install_test_addons
 
@@ -13,5 +14,6 @@ def test_addons_path():
     with install_test_addons(["addon_success"]):
         assert (
             Path(os.environ["ODOO_RC"]).read_text()
-            == "[options]\naddons_path=/opt/odoo/addons,.,\n"
+            == "[options]\naddons_path=/opt/odoo/addons,.\n"
         )
+        subprocess.check_call(["python", "-c", "import odoo.cli"])

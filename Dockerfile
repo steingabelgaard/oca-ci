@@ -1,7 +1,7 @@
 ARG codename=focal
 
 FROM ubuntu:$codename
-ENV LANG C.UTF-8
+ENV LANG=C.UTF-8
 USER root
 
 # Basic dependencies
@@ -14,18 +14,29 @@ RUN apt-get update -qq \
         gnupg \
         lsb-release \
         software-properties-common \
-        expect-dev
+        expect-dev \
+        pipx
+
+ENV PIPX_BIN_DIR=/usr/local/bin
 
 # Install wkhtml
-RUN curl -sSL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.$(lsb_release -c -s)_amd64.deb -o /tmp/wkhtml.deb \
+RUN case $(lsb_release -c -s) in \
+      focal) WKHTML_DEB_URL=https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.focal_amd64.deb ;; \
+      jammy) WKHTML_DEB_URL=https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb ;; \
+    esac \
+    && curl -sSL $WKHTML_DEB_URL -o /tmp/wkhtml.deb \
     && apt-get update -qq \
-    && dpkg --force-depends -i /tmp/wkhtml.deb \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -qq -f --no-install-recommends \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -qq -y --no-install-recommends /tmp/wkhtml.deb  \
     && rm /tmp/wkhtml.deb
 
 # Install nodejs dependencies
-RUN curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
-    && echo "deb https://deb.nodesource.com/node_15.x `lsb_release -c -s` main" > /etc/apt/sources.list.d/nodesource.list \
+RUN case $(lsb_release -c -s) in \
+      focal) NODE_SOURCE="deb https://deb.nodesource.com/node_15.x focal main" \
+             && curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - ;; \
+      jammy) NODE_SOURCE="deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" \
+             && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg ;; \
+    esac \
+    && echo "$NODE_SOURCE" | tee /etc/apt/sources.list.d/nodesource.list \
     && apt-get update -qq \
     && DEBIAN_FRONTEND=noninteractive apt-get install -qq nodejs
 # less is for odoo<12
@@ -37,9 +48,10 @@ RUN curl -sSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
     && apt-get update -qq \
     && DEBIAN_FRONTEND=noninteractive apt-get install -qq postgresql-client-12
 
-# Install Google Chrome for browser tests
-RUN curl -sSL https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o /tmp/chrome.deb \
-    && apt-get -y install --no-install-recommends /tmp/chrome.deb \
+# Install Google following Odoo's Runbot guideline https://github.com/odoo/runbot/blob/f8f435d468135486146a2e61e8d15d0f453c0e15/runbot/data/dockerfile_data.xml#L139-L140
+RUN curl -sSL https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_126.0.6478.182-1_amd64.deb -o /tmp/chrome.deb \
+    && apt-get update -qq \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -qq -y --no-install-recommends /tmp/chrome.deb  \
     && rm /tmp/chrome.deb
 
 RUN add-apt-repository -y ppa:deadsnakes/ppa
@@ -50,7 +62,8 @@ ARG python_version
 RUN apt-get update -qq \
     && DEBIAN_FRONTEND=noninteractive apt-get install -qq --no-install-recommends \
        build-essential \
-       python$python_version-dev \
+       python${python_version}-dev \
+       python${python_version}-venv \
        # we need python 3 for our helper scripts
        python3 \
        python3-venv \
@@ -73,53 +86,23 @@ RUN apt-get update -qq \
        # some other build tools
        swig \
        libffi-dev \
-       pkg-config \
-       # S&G
-       libpoppler-cpp-dev \
-       python3-dev \
-       poppler-utils \
-       # We should install distutils if and only if it exists
-    && apt-cache --generate pkgnames \
-       | grep --line-regexp --fixed-strings \
-          -e python$python_version-distutils \
-       | xargs apt install -y
-
-# Install Github Cli tool
-ENV GITHUB_CLI_VERSION 2.23.0
-
-RUN set -ex; \
-    curl -L "https://github.com/cli/cli/releases/download/v${GITHUB_CLI_VERSION}/gh_${GITHUB_CLI_VERSION}_checksums.txt" -o checksums.txt; \
-    curl -OL "https://github.com/cli/cli/releases/download/v${GITHUB_CLI_VERSION}/gh_${GITHUB_CLI_VERSION}_linux_amd64.deb"; \
-    shasum --ignore-missing -a 512 -c checksums.txt; \
-	dpkg -i "gh_${GITHUB_CLI_VERSION}_linux_amd64.deb"; \
-	rm -rf "gh_${GITHUB_CLI_VERSION}_linux_amd64.deb"; \
-    # verify gh binary works
-    gh --version;
-
-# Install pipx, which we use to install other python tools.
-ENV PIPX_BIN_DIR=/usr/local/bin
-ENV PIPX_DEFAULT_PYTHON=/usr/bin/python3
-RUN python3 -m venv /opt/pipx-venv \
-    && /opt/pipx-venv/bin/pip install --no-cache-dir pipx \
-    && ln -s /opt/pipx-venv/bin/pipx /usr/local/bin/
-
-# We don't use the ubuntu virtualenv package because it unbundles pip dependencies
-# in virtualenvs it create.
-ARG virtualenv_constraint
-RUN pipx install --pip-args="--no-cache-dir" "virtualenv$virtualenv_constraint"
+       pkg-config
 
 # We use manifestoo to check licenses, development status and list addons and dependencies
 RUN pipx install --pip-args="--no-cache-dir" "manifestoo>=0.3.1"
+# Used in oca_checklog_odoo to check odoo logs for errors and warnings
+RUN pipx install --pip-args="--no-cache-dir" checklog-odoo
 
-# Install setuptools-odoo-get-requirements and setuptools-odoo-makedefault helper
-# scripts.
-RUN pipx install --pip-args="--no-cache-dir" "setuptools-odoo>=3.0.7"
+# Install pyproject-dependencies helper scripts.
+ARG build_deps="setuptools-odoo wheel whool"
+RUN pipx install --pip-args="--no-cache-dir" pyproject-dependencies
+RUN pipx inject --pip-args="--no-cache-dir" pyproject-dependencies $build_deps
 
 # Make a virtualenv for Odoo so we isolate from system python dependencies and
 # make sure addons we test declare all their python dependencies properly
 ARG setuptools_constraint
-RUN virtualenv -p python$python_version /opt/odoo-venv \
-    && /opt/odoo-venv/bin/pip install "setuptools$setuptools_constraint" "pip>=21.3.1;python_version>='3.6'" \
+RUN python$python_version -m venv /opt/odoo-venv \
+    && /opt/odoo-venv/bin/pip install -U "setuptools$setuptools_constraint" "wheel" "pip" \
     && /opt/odoo-venv/bin/pip list
 ENV PATH=/opt/odoo-venv/bin:$PATH
 
@@ -127,24 +110,22 @@ ARG odoo_version
 
 # Install Odoo requirements (use ADD for correct layer caching).
 # We use requirements from OCB for easier maintenance of older versions.
-# We use no-binary for psycopg2 because its binary wheels are sometimes broken
-# and not very portable.
 ADD https://raw.githubusercontent.com/OCA/OCB/$odoo_version/requirements.txt /tmp/ocb-requirements.txt
-RUN pip install --no-cache-dir --no-binary psycopg2 -r /tmp/ocb-requirements.txt
-
-# Install Open Upgrade req. from our fork. We add often used packages to these
-ADD https://raw.githubusercontent.com/steingabelgaard/OpenUpgrade/$odoo_version/requirements.txt /tmp/sgou-requirements.txt
-RUN pip install --no-cache-dir --no-binary psycopg2 -r /tmp/sgou-requirements.txt
-
+# The sed command is to use the latest version of gevent and greenlet. The
+# latest version works with all versions of Odoo that we support here, and the
+# oldest pinned in Odoo's requirements.txt don't have wheels, and don't build
+# anymore with the latest cython.
+RUN sed -i -E "s/^(gevent|greenlet)==.*/\1/" /tmp/ocb-requirements.txt \
+ && pip install --no-cache-dir \
+      -r /tmp/ocb-requirements.txt \
+      packaging
 
 # Install other test requirements.
 # - coverage
 # - websocket-client is required for Odoo browser tests
-# - odoo-autodiscover required for python2
 RUN pip install --no-cache-dir \
   coverage \
-  websocket-client \
-  "odoo-autodiscover>=2 ; python_version<'3'"
+  websocket-client
 
 # Install Odoo (use ADD for correct layer caching)
 ARG odoo_org_repo=odoo/odoo
@@ -179,5 +160,6 @@ ENV ADDONS_DIR=.
 ENV ADDONS_PATH=/opt/odoo/addons
 ENV INCLUDE=
 ENV EXCLUDE=
-ENV OCA_GIT_USER_NAME=sgrunbot
-ENV OCA_GIT_USER_EMAIL=sgrunbot@adm.steingabelgaard.dk
+ENV OCA_GIT_USER_NAME=oca-ci
+ENV OCA_GIT_USER_EMAIL=oca-ci@odoo-community.org
+ENV OCA_ENABLE_CHECKLOG_ODOO=
