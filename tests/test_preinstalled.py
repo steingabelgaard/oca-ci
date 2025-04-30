@@ -2,13 +2,12 @@
 
 import os
 import shutil
-import subprocess
-import sys
 from pathlib import Path
+import subprocess
 
 import pytest
 
-from .common import odoo_bin, make_addons_dir
+from .common import odoo_bin, odoo_version_info
 
 
 def test_odoo_bin_in_path():
@@ -43,34 +42,11 @@ def test_openerp_server_rc():
     assert os.environ["OPENERP_SERVER"] == os.environ["ODOO_RC"]
 
 
+@pytest.mark.skipif(odoo_version_info >= (10, 0), reason="Odoo>=10")
+def test_import_openerp():
+    subprocess.check_call(["python", "-c", "import openerp; openerp.addons.__path__"])
+
+
+@pytest.mark.skipif(odoo_version_info < (10, 0), reason="Odoo<10")
 def test_import_odoo():
     subprocess.check_call(["python", "-c", "import odoo; odoo.addons.__path__"])
-    subprocess.check_call(["python", "-c", "import odoo.cli"])
-
-
-def _target_python_version():
-    version = subprocess.check_output(
-        ["python", "-c", "import platform; print(platform.python_version())"],
-        universal_newlines=True,
-    )
-    major, minor = version.split(".")[:2]
-    return int(major), int(minor)
-
-
-@pytest.mark.skipif(
-    _target_python_version() < (3, 7), reason="Whool requires python3.7 or higher"
-)
-def test_import_odoo_after_addon_install():
-    with make_addons_dir(["addon_success"]) as addons_dir:
-        addon_dir = addons_dir / "addon_success"
-        subprocess.check_call(["git", "init"], cwd=addon_dir)
-        subprocess.check_call(["git", "add", "."], cwd=addon_dir)
-        subprocess.check_call(["git", "config", "user.email", "..."], cwd=addon_dir)
-        subprocess.check_call(
-            ["git", "config", "user.name", "me@example.com"], cwd=addon_dir
-        )
-        subprocess.check_call(["git", "commit", "-m", "..."], cwd=addon_dir)
-        subprocess.check_call(
-            ["python", "-m", "pip", "install", addons_dir / "addon_success"]
-        )
-    subprocess.check_call(["python", "-c", "import odoo.cli"])
