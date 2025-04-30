@@ -79,7 +79,7 @@ jobs:
             image_name: py3.10-odoo18.0
     services:
       postgres:
-        image: postgres:12.0
+        image: postgres:9.6
         env:
           POSTGRES_USER: odoo
           POSTGRES_PASSWORD: odoo
