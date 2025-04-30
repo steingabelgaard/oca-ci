@@ -20,8 +20,7 @@ fi
 git remote -v
 git fetch --unshallow origin
 
-# Use pipx to get clean env
-pipx install git+https://github.com/steingabelgaard/click-odoo-sg.git@master
+pip install git+https://github.com/steingabelgaard/click-odoo-sg.git@master
 click-odoo-copypot --addons-dir ${ADDONS_DIR} -d ${PGDATABASE} --commit --log-level=debug --commit-message="[UPD] Copy {addon_name}.pot/da.po[ci skip]" --pot-branch $2
 
 LOCAL=$(git rev-parse @)
